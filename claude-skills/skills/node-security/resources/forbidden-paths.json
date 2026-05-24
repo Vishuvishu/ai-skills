@@ -1,0 +1,61 @@
+{
+  "critical": [
+    "/.env",
+    "/.env.local",
+    "/.env.production",
+    "/.git/config",
+    "/.aws/credentials",
+    "/secrets.json",
+    "/config.json",
+    "/settings.py",
+    "/web.config",
+    "/config.php",
+    "/database.yml"
+  ],
+  "scanning_tools": [
+    "/actuator/health",
+    "/actuator/env",
+    "/.well-known/security.txt",
+    "/debug/default/view",
+    "/_profiler/phpinfo",
+    "/server-status",
+    "/server-info"
+  ],
+  "common_cms_targets": [
+    "/wp-admin",
+    "/wp-login.php",
+    "/wp-content/plugins",
+    "/administrator/index.php",
+    "/phpmyadmin",
+    "/xmlrpc.php",
+    "/joomla/administrator",
+    "/drupal/user/login"
+  ],
+  "api_probes": [
+    "/api/v1/users",
+    "/api/debug",
+    "/api/config",
+    "/api/v1/debug",
+    "/api/swagger",
+    "/api/graphql/introspection"
+  ],
+  "patterns": [
+    "\\.env$",
+    "\\.env\\.",
+    "\\.git/",
+    "\\.php$",
+    "\\.asp$",
+    "\\.aspx$",
+    "\\.jsp$",
+    "\\.cgi$",
+    "\\.py$",
+    "\\.bak$",
+    "\\.sql$",
+    "\\.log$"
+  ],
+  "notes": {
+    "usage": "Any request path matching a 'critical' entry or any 'patterns' regex should trigger an immediate IP ban.",
+    "cms_targets": "CMS paths indicate automated scanners — safe to ban on first hit.",
+    "api_probes": "These indicate targeted recon — ban immediately and log with high severity."
+  }
+}
