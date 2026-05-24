@@ -1,6 +1,6 @@
 # ai-skills
 
-A collection of skills for Claude — drop-in instruction sets that make Claude smarter at specific tasks.
+A collection of skills for Claude or any AI Agents — drop-in instruction sets that make Claude smarter at specific tasks.
 
 ---
 
