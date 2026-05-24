@@ -22,13 +22,13 @@ A skill is a folder with a `SKILL.md` file inside. The AI reads it at the start 
 
 Pick the skills you want from the [`skills/`](./skills/) folder, then follow the steps for your tool.
 
-- [Cursor, GitHub Copilot, Antigravity IDE — and any tool supporting `.agents/skills/`](#cursor-github-copilot-antigravity-ide)
-- [Claude.ai](#claudeai)
-- [IBM Bob](#ibm-bob)
+- [Cursor, GitHub Copilot, Antigravity IDE — and any tool supporting `.agents/skills/`](#cursor-github-copilot-antigravity-ide) (Docs: [Cursor](https://docs.cursor.com/context/rules-for-ai), [Copilot](https://docs.github.com/en/copilot/customizing-copilot/adding-custom-instructions-for-github-copilot), [Antigravity](https://antigravity.google))
+- [Claude.ai](#claudeai) ([Docs](https://support.anthropic.com/en/articles/9517075-custom-instructions-in-projects))
+- [IBM Bob](#ibm-bob) ([Docs](https://ibm.com/bob/docs/skills))
 
 ---
 
-### Cursor, GitHub Copilot, Antigravity IDE
+### [Cursor](https://docs.cursor.com/context/rules-for-ai), [GitHub Copilot](https://docs.github.com/en/copilot/customizing-copilot/adding-custom-instructions-for-github-copilot), [Antigravity IDE](https://antigravity.google)
 
 These tools all follow the [Agent Skills open standard](https://agentskills.io) and auto-discover skills from `.agents/skills/` in your project root. The steps are the same for all of them.
 
@@ -57,30 +57,26 @@ Do the same but under `~/.agents/skills/` instead.
 These tools might also support the tools specific folders instead of `.agents`, but using the `.agents` is ideal way.
 | Tool | Also checks | Global path |
 |---|---|---|
-| Cursor | `.cursor/skills/` | `~/.cursor/skills/` |
-| GitHub Copilot | `.github/skills/`, `.claude/skills/` | `~/.copilot/skills/` |
-| Antigravity IDE | — | `~/.gemini/antigravity/skills/` |
+| [Cursor](https://cursor.com/docs/skills) | `.cursor/skills/` | `~/.cursor/skills/` |
+| [GitHub Copilot](https://docs.github.com/en/copilot/concepts/agents/about-agent-skills) | `.github/skills/`, `.claude/skills/` | `~/.copilot/skills/` |
+| [Antigravity IDE](https://antigravity.google/docs/skills) | — | `~/.gemini/antigravity/skills/` |
 
 So if you already have a `.cursor/skills/` or `.github/skills/` folder, you can put skills there instead — it works the same way.
 
 ---
 
-### Claude.ai
+### [Claude.ai](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview)
 
-Claude.ai supports skills via **Projects**. It uses a single text box, so paste the `SKILL.md` contents rather than copying the folder.
+Claude.ai natively supports Custom Agent Skills by uploading them as `.zip` files (available on Pro, Max, Team, and Enterprise plans with code execution enabled).
 
-1. Open [claude.ai](https://claude.ai) and create or open a **Project**
-2. Click **Project settings** → **Custom instructions**
-3. Open the `SKILL.md` of each skill you want, copy its contents, and paste into the box
-4. Hit **Save**
-
-Claude will apply the skills to every conversation in that project automatically.
-
-> To use multiple skills, paste them one after another, separated by a blank line.
+1. Compress your desired skill folder (containing `SKILL.md` and any optional `resources/` folder) into a `.zip` file.
+2. Open [claude.ai](https://claude.ai) and navigate to **Settings** → **Features**.
+3. Locate the **Custom Skills** section and upload your `.zip` file.
+4. Claude will automatically discover and trigger the skill when relevant to your conversation.
 
 ---
 
-### IBM Bob
+### [IBM Bob](https://bob.ibm.com/docs/ide/features/skills)
 
 > **Note:** Skills require **Advanced mode** in Bob. Make sure it's enabled before starting.
 
