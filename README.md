@@ -9,6 +9,7 @@ A collection of skills for Claude or any AI Agents — drop-in instruction sets 
 | Skill | What it does |
 |---|---|
 | [`node-security`](./skills/node-security/) | Getting scraped, spammed, or hit by bots? Use this skill and ask the Claude or any AI agent to harden your Node.js backend — from IP banning and rate limiting to CAPTCHA and secure headers. For turnstile you also need the changes in the frontend |
+| [`vercel-nextjs`](./skills/vercel-nextjs/) | Deploying on Vercel or optimizing Next.js? Use this skill to configure `vercel.json` for custom regions, cold start reduction, functions, security headers, redirects, crons, and image optimization. |
 
 ---
 
