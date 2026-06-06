@@ -10,7 +10,23 @@
     "/settings.py",
     "/web.config",
     "/config.php",
-    "/database.yml"
+    "/database.yml",
+    "/wp-config",
+    "/.ssh",
+    "/.docker",
+    "/.npmrc",
+    "/.htpasswd",
+    "/.pgpass",
+    "/.netrc",
+    "/pypirc",
+    "/next.config",
+    "/firebase.json",
+    "/s3cfg",
+    "/sendgrid",
+    "/terraform",
+    "/amplify",
+    "/ormconfig.json",
+    "/credentials"
   ],
   "scanning_tools": [
     "/actuator/health",
@@ -19,7 +35,14 @@
     "/debug/default/view",
     "/_profiler/phpinfo",
     "/server-status",
-    "/server-info"
+    "/server-info",
+    "/robots.txt",
+    "/.DS_Store",
+    "/wlwmanifest.xml",
+    "/sitemap.xml",
+    "/_ignition",
+    "/ecp/Current",
+    "/_catalog"
   ],
   "common_cms_targets": [
     "/wp-admin",
@@ -29,7 +52,11 @@
     "/phpmyadmin",
     "/xmlrpc.php",
     "/joomla/administrator",
-    "/drupal/user/login"
+    "/drupal/user/login",
+    "/wp-content",
+    "/wp-includes",
+    "/joomla",
+    "/drupal"
   ],
   "api_probes": [
     "/api/v1/users",
@@ -37,7 +64,17 @@
     "/api/config",
     "/api/v1/debug",
     "/api/swagger",
-    "/api/graphql/introspection"
+    "/api/graphql/introspection",
+    "/swagger",
+    "/api-docs",
+    "/graphql",
+    "/telescope",
+    "/airflow",
+    "/prometheus",
+    "/kafka-ui",
+    "/exchanges",
+    "/queue",
+    "/credential-translation"
   ],
   "patterns": [
     "\\.env$",
@@ -51,7 +88,8 @@
     "\\.py$",
     "\\.bak$",
     "\\.sql$",
-    "\\.log$"
+    "\\.log$",
+    "\\.rb$"
   ],
   "notes": {
     "usage": "Any request path matching a 'critical' entry or any 'patterns' regex should trigger an immediate IP ban.",
