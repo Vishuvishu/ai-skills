@@ -5,6 +5,7 @@
     "/.env.production",
     "/.git/config",
     "/.aws/credentials",
+    "/secrets",
     "/secrets.json",
     "/config.json",
     "/settings.py",
@@ -26,7 +27,9 @@
     "/terraform",
     "/amplify",
     "/ormconfig.json",
-    "/credentials"
+    "/credentials",
+    "/stripe-credentials",
+    "/stripe-credentials.json"
   ],
   "scanning_tools": [
     "/actuator/health",
@@ -89,7 +92,10 @@
     "\\.bak$",
     "\\.sql$",
     "\\.log$",
-    "\\.rb$"
+    "\\.rb$",
+    "\\.yml$",
+    "\\.yaml$",
+    "app\\.js\\.map"
   ],
   "notes": {
     "usage": "Any request path matching a 'critical' entry or any 'patterns' regex should trigger an immediate IP ban.",
