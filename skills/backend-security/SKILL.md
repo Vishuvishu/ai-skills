@@ -43,6 +43,18 @@ Incoming Request
 
 Treat this as a checklist to walk top-to-bottom for every route, not just a diagram to admire.
 
+### Development, Deployment & Verification Layers
+
+Beyond the runtime request pipeline, apply these layers to secure credentials, verify data privacy, harden the environment, validate business logic, and test defenses:
+
+```
+[8]  Secrets & Credentials  ← Secret Leak & Credential Security
+[9]  PII & Log Security     ← Personal Data Flow & Log Exposure
+[10] Env & Prod Readiness   ← Production Readiness & Configuration
+[11] Logic & Access Control ← Authentication & Business Logic Security
+[12] Penetration Testing    ← Penetration Testing & Vulnerability Exploitation
+```
+
 ---
 
 ## Layer 1 — Path Blocking / Bot Shield
@@ -132,24 +144,27 @@ No endpoint should return more than the caller is entitled to see:
 
 ---
 
-## 5 Security Checks Before Launch (Pre-Deploy Audit)
+## Layer 8 — Secret Leak & Credential Security
 
-Run these five checks, in order, across the whole codebase before any production deploy, regardless of language:
-
-### 01 — Secret Leak Prevention
 1. Move every hardcoded secret (API keys, DB connection strings, JWT/session signing secrets, OAuth client secrets, third-party API keys) into environment variables. Check config files, utility modules, router/handler setup, and code comments — secrets hide in comments more often than you'd expect.
 2. Confirm `.env` (or equivalent) is in `.gitignore`, and create a checked-in `.env.example` listing every required key with a placeholder value — never a real one.
 3. Confirm logs and JSON responses never print secrets, tokens, or raw connection strings, including in error handlers and unhandled-exception logging.
 4. If any secret was ever committed to git history, treat it as permanently compromised — rotating it is mandatory, not optional, because history persists even after a file is deleted.
 
-### 02 — Personal Data Flow Audit
+---
+
+## Layer 9 — Personal Data Flow & Log Exposure
+
 1. Trace every point personal data enters the system (signup forms, profile updates, payment forms, support tickets) and follow it to every place it's stored, logged, or forwarded.
 2. Check every log statement and error handler for leaked PII or credentials.
 3. Confirm passwords are hashed before storage, never logged, never returned in any API response.
 4. Confirm cookies carrying sensitive data set the correct security flags.
 5. Confirm each endpoint returns only the fields the caller needs — no excess user data, no other users' data.
 
-### 03 — Pre-Deploy Production Audit
+---
+
+## Layer 10 — Production Readiness & Configuration
+
 1. **Environment validation**: the app must validate required environment variables at startup and refuse to start (with a clear error) if a critical one (DB URL, signing secret, encryption key) is missing — a silent fallback to an insecure default is worse than crashing.
 2. **Debug code removal**: delete test/debug endpoints (`/debug`, `/test-db`, `/admin-backdoor`, `/seed-data`), hardcoded test credentials, and leftover debug print statements. Debug mode must default to off.
 3. **Error handling policy**: standardize error responses so raw SQL, stack traces, and file paths never reach the client — mask as a generic message plus a correlation ID, with full detail going to server-side logs only.
@@ -158,13 +173,18 @@ Run these five checks, in order, across the whole codebase before any production
 6. **CORS**: restrict allowed origins explicitly to the real frontend domain(s) in production — no wildcard `*` on any route that reads authenticated data.
 7. **Database security**: TLS/SSL enforced on the DB connection in production, no default credentials, no database port exposed directly to the public internet.
 
-### 04 — Deep Security Audit for Complex Logic
+---
+
+## Layer 11 — Authentication & Business Logic Security
+
 1. **Auth & IDOR**: every protected route has auth middleware wired in; every handler that takes a resource ID verifies the *authenticated* caller owns or is authorized for that specific resource — don't just check "is logged in," check "is logged in **as the right person**."
 2. **JWT security**: expiration validated, strong random signing secret, signature verified on every request (not just decoded and trusted).
 3. **Payment logic**: price, quantity, tax, and discount math must be computed independently on the server — never trust a client-submitted total. Payment-gateway webhook signatures must be verified before acting on a webhook payload.
 4. **Input handling & injection**: all SQL/NoSQL queries use parameterization or an ORM's safe query builder — no string concatenation of user input into a query, ever. Sanitize any field that will later be rendered as HTML.
 
-### 05 — Attacker's Perspective Review
+---
+
+## Layer 12 — Penetration Testing & Vulnerability Exploitation
 Actually try to break it, don't just read the code:
 1. **ID manipulation**: increment or swap IDs in URLs, headers, and request bodies to try to read or edit another user's data.
 2. **Login/role bypass**: send expired, malformed, or missing tokens; try to reach an admin/moderator-only route as a normal user by guessing the URL or editing a client-side role field.
@@ -193,9 +213,9 @@ Before any handler goes to production, confirm:
 
 Copy-paste (and adapt) these task prompts to run a full audit pass. Each one is written so an LLM with codebase access can execute it end-to-end and report findings in a consistent, reviewable format — treat "show me X" / "report format" instructions as literal required output, not optional color.
 
-### Task Prompt 1: Secret Leak Prevention Pass
+### Task Prompt 8: Secret Leak & Credential Security
 ```text
-Act as an application security engineer running a secret-leak audit before this app goes to production. Do a full pass across the entire codebase, in every language and config format present (not just one file type).
+Act as an application security engineer running a secret leak & credential security check. Do a full pass across the entire codebase, in every language and config format present (not just one file type).
 
 1. Find every hardcoded secret: API keys, passwords, database connection strings (Postgres/MySQL/Mongo/Redis URIs), JWT/session signing secrets, OAuth client secrets, encryption keys, and any third-party API key (Stripe, OpenAI, SendGrid, Twilio, Firebase, AWS, Supabase, etc). Check source files, config files, infrastructure-as-code (Terraform/CloudFormation), CI/CD YAML, Dockerfiles, and code comments — secrets hide in comments and old config more often than in obvious places.
 2. Apply provider-specific rules where relevant:
@@ -210,9 +230,9 @@ Act as an application security engineer running a secret-leak audit before this 
 Report format: a table with columns [Secret type | File & line | Risk if leaked | Where you moved it / what you recommend]. End with a one-line overall verdict: SAFE TO DEPLOY / NOT SAFE — fix items above first.
 ```
 
-### Task Prompt 2: Personal Data Flow Audit
+### Task Prompt 9: Personal Data Flow & Log Exposure
 ```text
-Act as a privacy/security auditor mapping how user personal data moves through this app, end to end.
+Act as a privacy/security specialist mapping personal data flow and log exposure through this app, end to end.
 
 1. Identify every data-collection point (signup, profile edit, checkout, support form, file upload, OAuth callback, analytics beacon) and, for each, list exactly which personal fields are collected (email, phone, name, address, DOB, payment info, IP, device fingerprint, etc).
 2. For each field, trace where it goes next: which database table, which third-party service (analytics, error tracking, payment processor, email/SMS provider, AI API), and whether it's included in any webhook payload sent onward.
@@ -225,9 +245,9 @@ Act as a privacy/security auditor mapping how user personal data moves through t
 Report format: a data-flow table [Field | Collected where | Stored where | Sent to (third parties) | Logged? (Y/N, where) | Issue found | Fix applied], followed by a short summary of the biggest exposure risk.
 ```
 
-### Task Prompt 3: Pre-Deploy Production Audit
+### Task Prompt 10: Production Readiness & Configuration
 ```text
-Act as a release engineer doing a go/no-go security audit before this app is deployed to production. Run every check below and report pass/fail with evidence for each — don't summarize away a failure.
+Act as a systems security engineer running a production readiness & configuration review on this application. Run every check below and report pass/fail with evidence for each — don't summarize away a failure.
 
 1. Environment variables: does the app validate all required env vars at startup and refuse to boot with a clear error if a critical one (DB URL, signing secret, encryption key, payment secret) is missing?
 2. Debug code removal: search for and flag debug-only endpoints (`/debug`, `/test-db`, `/admin-backdoor`, `/seed-data`), hardcoded test/mock credentials, commented-out code referencing incomplete security work, and leftover debug print statements. Confirm debug mode defaults to off.
@@ -240,9 +260,9 @@ Act as a release engineer doing a go/no-go security audit before this app is dep
 Report format: a checklist table [Check | Pass/Fail | Evidence | Fix if failed], followed by an overall GO / NO-GO recommendation.
 ```
 
-### Task Prompt 4: Deep Security Audit for Complex Logic
+### Task Prompt 11: Deep Security Audit for Authentication & Business Logic
 ```text
-Act as an application security engineer doing a deep-dive audit on this app's highest-risk logic: [payments / custom auth / complex server-side business rules — fill in what applies].
+Act as an application security engineer doing a deep-dive check on this app's authentication and business logic: [payments / custom auth / complex server-side business rules — fill in what applies].
 
 AUTHENTICATION & AUTHORIZATION:
 - Check every protected route/handler for auth middleware actually being applied (not merely available).
@@ -264,9 +284,9 @@ INPUT HANDLING:
 For every issue found, report: what the vulnerability is, exactly where it is in the code, a concrete example of how an attacker would exploit it, and the specific fix (with a code sketch if the fix is non-obvious).
 ```
 
-### Task Prompt 5: Attacker's Perspective Review
+### Task Prompt 12: Penetration Testing & Vulnerability Exploitation
 ```text
-Think and act like an attacker actively trying to break into this app. Work through each attack path below, attempt it (or reason through exactly how you would, referencing the actual code/routes), and report what you find — don't just restate the checklist as if it were already verified.
+Think and act like a penetration tester actively trying to break into this app. Work through each attack path below, attempt it (or reason through exactly how you would, referencing the actual code/routes), and report what you find — don't just restate the checklist as if it were already verified.
 
 1. Data access via ID manipulation: for every endpoint taking a user ID, order ID, or document ID, try incrementing/swapping the ID to see if another user's data is returned without an ownership check.
 2. Login/session bypass: check whether any API route works with no auth token at all; check whether expired/malformed tokens are properly rejected; check for any default or leftover admin account with a known/weak credential.
