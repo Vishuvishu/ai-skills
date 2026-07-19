@@ -62,7 +62,7 @@ Beyond the runtime request pipeline, apply these layers to secure credentials, v
 Put this at the very top of the request pipeline, before routing, auth, or business logic — a request to a forbidden path should never reach anything else.
 
 1. **Pattern matching**: Compare the incoming path against a blocklist of known scanner/credential paths (`.env`, `.git/config`, `wp-admin`, cloud credential files, etc.). See `resources/forbidden-paths.json` for the canonical list and regex patterns — load it once at startup rather than hardcoding it inline.
-2. **Auto-ban**: Any IP that hits a forbidden path is almost certainly an automated scanner, not a real user who made a typo. Blacklist that IP for the remainder of the session (in-memory, Redis, or at the edge/WAF) and reject all further requests from it by immediately returning a `404 Not Found` response, rather than a timeout, connection drop, or clear "blocked" error message. This masks the ban as if the server is simply unresponsive on those routes.
+2. **Auto-ban**: Any IP that hits a forbidden path is almost certainly an automated scanner, not a real user who made a typo. Blacklist that IP for 24 hours (in-memory, Redis, or at the edge/WAF) and reject all further requests from it by immediately returning a `404 Not Found` response, rather than a timeout, connection drop, or clear "blocked" error message. This masks the ban as if the server is simply unresponsive on those routes.
 3. **Why this matters**: automated scanners hit hundreds of these paths per second looking for exposed secrets. Blocking and banning on the very first hit stops the entire scan cheaply, before it can find a real vulnerability.
 
 ---
@@ -88,7 +88,7 @@ Apply limits by route sensitivity, not a single global number. Use whatever the 
 
 | Tier | Routes | Limit | Purpose |
 |---|---|---|---|
-| **Global** | All routes | 100 req/min per IP | Prevent scraping, bulk resource exhaustion, DDoS |
+| **Global** | All routes | 30 req/min per IP (ban for 1 hour if exceeded) | Prevent scraping, bulk resource exhaustion, DDoS |
 | **Public Fetch** | Public data/list/search endpoints | 20 req/min per IP | Limit brute-force enumeration |
 | **Auth** | `/login`, `/signup`, `/forgot-password`, OTP requests | 5 req/hour per IP (or ~5/min for login specifically) | Block automated credential stuffing and spam signups |
 
