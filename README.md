@@ -8,7 +8,7 @@ A collection of skills for Claude or any AI Agents — drop-in instruction sets 
 
 | Skill | What it does |
 |---|---|
-| [`node-security`](./skills/node-security/) | Getting scraped, spammed, or hit by bots? Use this skill and ask the Claude or any AI agent to harden your Node.js backend — from IP banning and rate limiting to CAPTCHA and secure headers. For turnstile you also need the changes in the frontend |
+| [`backend-security`](./skills/backend-security/) | Getting scraped, spammed, or hit by bots? Use this skill and ask the Claude or any AI agent to harden your Node.js backend — from IP banning and rate limiting to CAPTCHA and secure headers. For turnstile you also need the changes in the frontend |
 | [`vercel-nextjs`](./skills/vercel-nextjs/) | Deploying on Vercel or optimizing Next.js? Use this skill to configure `vercel.json` for custom regions, cold start reduction, functions, security headers, redirects, crons, and image optimization. |
 
 ---
@@ -41,7 +41,7 @@ Copy the skill folder(s) you want from [`skills/`](./skills/) into `.agents/skil
 your-project/
 └── .agents/
     └── skills/
-        └── node-security/      ← paste the whole folder here
+        └── backend-security/      ← paste the whole folder here
             ├── SKILL.md
             └── resources/
                 └── ...
@@ -87,7 +87,7 @@ Copy the skill folder(s) you want from [`skills/`](./skills/) into `.bob/skills/
 your-project/
 └── .bob/
     └── skills/
-        └── node-security/      ← paste the whole folder here
+        └── backend-security/      ← paste the whole folder here
             ├── SKILL.md
             └── resources/
                 └── ...
@@ -105,7 +105,7 @@ Bob will automatically activate the skill when relevant. If not you can also men
 
 If your tool isn't picking up a skill automatically, you can always trigger it manually by referencing the skill file directly in your message:
 
-> *"Follow the instructions in `.agents/skills/node-security/SKILL.md` and review my app for security issues."*
+> *"Follow the instructions in `.agents/skills/backend-security/SKILL.md` and review my app for security issues."*
 
 Or just paste the contents of `SKILL.md` directly into the chat as context. Every tool supports this as a fallback.
 
